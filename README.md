@@ -1,190 +1,210 @@
-# 🚀 Pake GUI - Interface graphique pour créer des applications de bureau
+# 🚀 Pake GUI - Interface Graphique pour Pake
 
-Une interface graphique conviviale pour utiliser [Pake](https://github.com/tw93/Pake), l'outil qui transforme des sites web en applications de bureau légères et rapides.
+Une interface graphique moderne et intuitive pour transformer n'importe quel site web en application de bureau native avec [Pake](https://github.com/tw93/Pake).
 
-![Version](https://img.shields.io/badge/version-1.0.0-blue)
+![Version](https://img.shields.io/badge/version-2.0.0-blue)
 ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-green)
 ![Python](https://img.shields.io/badge/python-3.7%2B-blue)
 
 ## ✨ Fonctionnalités
 
-- 🖥️ **Interface graphique intuitive** - Plus besoin de ligne de commande
-- 🎯 **Presets de sites populaires** - YouTube, Gmail, GitHub, Twitter, etc.
-- 🎨 **Personnalisation avancée** - Icônes, dimensions, options d'affichage
-- 📱 **Cross-plateforme** - Windows, macOS, Linux
-- 📝 **Configuration sauvegardée** - Vos paramètres sont conservés
-- 📋 **Génération de commandes** - Visualisez la commande Pake générée
-- 📊 **Journal d'activité** - Suivez le processus de création en temps réel
-- ✅ **Vérification automatique** - Contrôle des prérequis
+### 🎯 Interface Moderne
+- **Design moderne** avec emojis et couleurs attractives
+- **Interface responsive** qui s'adapte à la taille de l'écran
+- **Sections organisées** pour une navigation intuitive
+- **Journal d'activité en temps réel** avec timestamps
+- **Barres de progression** pour suivre l'avancement
 
-## 📋 Prérequis
+### 🌟 Sites Populaires (Presets)
+Boutons rapides pour créer des applications pour :
+- 🎥 YouTube
+- 📧 Gmail  
+- 🐙 GitHub
+- 🐦 Twitter/X
+- 💬 WhatsApp Web
+- 🤖 ChatGPT
+- 🎮 Discord
+- 🎵 Spotify
+- 🎬 Netflix
 
-Avant d'utiliser Pake GUI, vous devez installer :
+### ⚙️ Configuration Avancée
+- **Dimensions personnalisées** (largeur × hauteur)
+- **Icône personnalisée** (tous formats supportés)
+- **Options avancées** :
+  - 🖥️ Mode plein écran
+  - 🎯 Masquer la barre de titre
+  - 📌 Toujours au premier plan
+  - 👻 Mode transparent
 
-### 1. Python 3.7+
-- **Windows** : [Télécharger Python](https://python.org/downloads/)
-- **macOS** : `brew install python3` ou depuis le site officiel
-- **Linux** : `sudo apt install python3 python3-tk` (Ubuntu/Debian)
+### 🔧 Détection Intelligente
+- **Auto-détection de Pake** même si pas dans le PATH
+- **Vérification des prérequis** (Node.js, npm, Rust, Pake)
+- **Messages d'aide contextuelle** pour l'installation
+- **Support multi-plateforme** (Windows, Linux, macOS)
 
-### 2. Node.js (version 18+)
-- [Télécharger Node.js](https://nodejs.org/)
+### 💾 Gestion de Configuration
+- **Sauvegarde automatique** des paramètres
+- **Chargement automatique** au démarrage
+- **Export des commandes** générées
+- **Copie vers le presse-papiers**
 
-### 3. Rust
-- **Windows** : [Télécharger Rust](https://www.rust-lang.org/tools/install)
-- **macOS/Linux** : `curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh`
+## 🚀 Installation Rapide
 
-### 4. Pake CLI
+### Prérequis
 ```bash
+# 1. Node.js (depuis https://nodejs.org/)
+node --version
+
+# 2. Rust (depuis https://rustup.rs/)  
+rustc --version
+
+# 3. Pake via npm
 npm install -g pake-cli
 ```
 
-**Note Windows** : Si vous avez une erreur d'exécution de scripts, exécutez dans PowerShell :
-```powershell
-Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
-```
-
-## 🚀 Installation
-
-1. **Cloner ou télécharger** ce projet
-2. **Naviguer** vers le dossier du projet
-3. **Lancer** l'application :
-
-### Windows
-```cmd
-launch_pake_gui.bat
-```
-ou
-```cmd
-python pake_gui.py
-```
-
-### macOS/Linux
+### Lancement
 ```bash
-chmod +x launch_pake_gui.sh
+# Méthode 1: Python direct
+python pake_gui.py
+
+# Méthode 2: Script batch (Windows)
+launch_pake_gui.bat
+
+# Méthode 3: Script shell (Linux/macOS)
 ./launch_pake_gui.sh
 ```
-ou
-```bash
-python3 pake_gui.py
-```
 
-## 🎯 Utilisation
+## 🎯 Guide d'Utilisation
 
-### Interface principale
+### 1. Vérification des Prérequis
+Cliquez sur **"🔍 Vérifier prérequis"** au premier lancement :
+- ✅ Node.js installé
+- ✅ npm installé  
+- ✅ Rust installé
+- ✅ Pake installé et détecté
 
-1. **URL du site** : Entrez l'URL du site web à transformer
-2. **Nom de l'app** : Donnez un nom à votre application
-3. **Dimensions** : Définissez la taille de la fenêtre (largeur/hauteur)
-4. **Icône** : Sélectionnez une icône personnalisée (optionnel)
-5. **Options** : Cochez les options souhaitées (plein écran, masquer titre, etc.)
+### 2. Configuration de Base
+- **URL du site** : L'adresse complète (ex: https://github.com)
+- **Nom de l'app** : Le nom de votre application (ex: GitHub)
 
-### Presets disponibles
+### 3. Personnalisation
+- **Dimensions** : Largeur × Hauteur en pixels
+- **Icône** : Fichier .ico, .png, .jpg (optionnel)
+- **Options** : Plein écran, masquer titre, etc.
 
-L'interface propose des boutons pour les sites populaires :
-- 🎬 **YouTube** - Plateforme vidéo
-- 📧 **Gmail** - Client email
-- 🐙 **GitHub** - Plateforme de développement
-- 🐦 **Twitter/X** - Réseau social
-- 💬 **WhatsApp Web** - Messagerie
-- 🤖 **ChatGPT** - IA conversationnelle
+### 4. Création
+- **"📋 Générer commande"** : Voir la commande qui sera exécutée
+- **"🚀 Créer l'application"** : Lancer la création
+- **Suivre le journal** : Messages en temps réel
 
-### Création d'une application
+### 5. Résultat
+L'application créée sera dans le dossier courant :
+- Fichier d'installation (`.msi`, `.deb`, `.dmg`)
+- Dossier avec les sources de l'application
 
-1. **Remplissez** les champs obligatoires (URL minimum)
-2. **Cliquez** sur "🚀 Créer l'application"
-3. **Suivez** le processus dans le journal d'activité
-4. **Récupérez** le fichier d'installation généré dans le dossier courant
+## 🛠️ Dépannage
 
-### Types de fichiers générés
+### Pake non trouvé
+Si l'interface ne trouve pas Pake après installation :
 
-- **Windows** : `.msi` - Installateur Windows
-- **macOS** : `.dmg` - Image disque macOS
-- **Linux** : `.deb` - Package Debian/Ubuntu
+1. **Redémarrer** le terminal/invite de commande
+2. **Vérifier l'installation** : `npm list -g pake-cli`
+3. **Réinstaller si nécessaire** : `npm uninstall -g pake-cli && npm install -g pake-cli`
+4. **Vérifier le PATH npm** : `npm root -g`
 
-## 🛠️ Options avancées
+### Erreurs de création
+- **Vérifier l'URL** : Doit commencer par `http://` ou `https://`
+- **Nom valide** : Éviter les caractères spéciaux
+- **Icône accessible** : Fichier existant et lisible
+- **Connexion internet** : Nécessaire pour télécharger les dépendances
 
-### Paramètres de fenêtre
-- **Largeur/Hauteur** : Dimensions par défaut (1200x800)
-- **Plein écran** : Lance l'app en mode plein écran
-- **Masquer barre de titre** : Interface plus épurée
+### Performance
+- **Première création** : Plus lente (téléchargement des dépendances)
+- **Créations suivantes** : Plus rapides (cache local)
+- **Gros sites** : Peuvent prendre plusieurs minutes
 
-### Icônes personnalisées
-- Formats supportés : `.ico`, `.png`, `.jpg`, `.jpeg`, `.gif`, `.bmp`
-- Taille recommandée : 256x256 pixels
-- L'icône sera convertie automatiquement par Pake
-
-## 🔧 Dépannage
-
-### "Pake non installé"
-```bash
-npm install -g pake-cli
-```
-
-### "Node.js non trouvé"
-- Vérifiez l'installation : `node --version`
-- Redémarrez votre terminal après installation
-
-### "Rust non trouvé"
-- Vérifiez l'installation : `rustc --version`
-- Sourcez votre profil : `source ~/.bashrc` (Linux/macOS)
-
-### Erreur de permissions Windows
-```powershell
-Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
-```
-
-### Interface qui ne s'affiche pas (Linux)
-```bash
-sudo apt install python3-tk
-```
-
-## 📁 Structure du projet
+## 📁 Structure des Fichiers
 
 ```
 pake_auto/
-├── pake_gui.py              # Application principale
-├── requirements.txt         # Dépendances Python
-├── launch_pake_gui.bat     # Lanceur Windows
-├── launch_pake_gui.sh      # Lanceur Linux/macOS
-├── README.md               # Documentation
-└── pake_gui_config.json    # Configuration (créé automatiquement)
+├── 📄 pake_gui.py              # Interface principale
+├── 📄 requirements.txt         # Dépendances Python
+├── 📄 launch_pake_gui.bat     # Lanceur Windows
+├── 📄 launch_pake_gui.sh      # Lanceur Linux/macOS
+├── 📄 README.md               # Cette documentation
+├── 📄 HELP.md                 # Aide détaillée
+├── 📄 .gitignore              # Fichiers à ignorer
+├── 📄 pake_gui_config.json    # Configuration sauvegardée
+└── 📁 generated_apps/         # Applications créées (auto)
 ```
 
-## 🎨 Captures d'écran
+## 🚀 Fonctionnalités Avancées
 
-L'interface propose :
-- ✅ Vérification automatique des prérequis
-- 📝 Formulaire de configuration intuitif
-- 🎯 Boutons presets pour sites populaires
-- 📊 Journal d'activité en temps réel
-- 💾 Sauvegarde automatique des paramètres
+### Détection Automatique de Pake
+L'interface recherche Pake dans :
+1. PATH système standard
+2. Dossier npm global (`npm root -g`)  
+3. Chemins Windows typiques (`%APPDATA%\npm\`)
+4. Dossiers Node.js système
+5. PATH étendu manuel
 
-## 🤝 Contribution
+### Gestion des Erreurs
+- **Messages détaillés** dans le journal
+- **Suggestions de solutions** automatiques
+- **Timeouts intelligents** pour éviter les blocages
+- **Gestion des interruptions** utilisateur
 
-Les contributions sont les bienvenues ! N'hésitez pas à :
-- 🐛 Signaler des bugs
-- 💡 Proposer des améliorations
-- 🔧 Ajouter des fonctionnalités
-- 📖 Améliorer la documentation
+### Configuration Persistante
+- **Sauvegarde automatique** à chaque création
+- **Chargement au démarrage** des derniers paramètres
+- **Format JSON lisible** pour édition manuelle
+- **Encodage UTF-8** pour les caractères spéciaux
 
-## 📜 Licence
+## 🎨 Interface Moderne
 
-Ce projet est sous licence libre. Pake est développé par [tw93](https://github.com/tw93/Pake).
+L'interface comprend :
+- **En-tête stylé** avec titre et emoji
+- **Sections colorées** avec icônes pour chaque fonctionnalité  
+- **Boutons presets** avec emojis pour les sites populaires
+- **Journal d'activité** avec scrolling automatique et timestamps
+- **Barre de progression** animée pendant la création
+- **Fenêtres popup** pour l'affichage des commandes
+- **Gestion du scroll** avec molette de souris
 
-## 🔗 Liens utiles
+## 📞 Support et Documentation
 
-- [Pake sur GitHub](https://github.com/tw93/Pake)
-- [Documentation Pake](https://github.com/tw93/Pake/blob/main/bin/README.md)
-- [Tauri Framework](https://tauri.app/)
-- [Node.js](https://nodejs.org/)
-- [Rust](https://www.rust-lang.org/)
+- **Documentation Pake** : https://github.com/tw93/Pake
+- **HELP.md** : Guide détaillé d'installation et dépannage
+- **Journal intégré** : Messages détaillés dans l'interface
+- **Logs** : Consultez le journal d'activité en bas de l'interface
 
-## 🎉 Remerciements
+## 🔄 Changelog v2.0.0
 
-- **tw93** pour l'excellent outil Pake
-- La communauté **Tauri** pour le framework
-- Tous les contributeurs et utilisateurs
+### 🆕 Nouvelles fonctionnalités
+- Interface graphique complètement redessinée
+- Détection automatique avancée de Pake
+- 9 presets de sites populaires avec emojis
+- Journal d'activité avec timestamps
+- Options avancées (transparence, toujours au premier plan)
+- Fenêtre de visualisation des commandes avec copie
+- Gestion du scroll avec molette
+- Configuration UTF-8 pour les caractères spéciaux
+
+### 🔧 Améliorations techniques
+- Code complètement refactorisé et documenté
+- Gestion d'erreurs robuste avec timeouts
+- Threading pour éviter le gel de l'interface
+- Auto-sauvegarde de la configuration
+- Messages d'aide contextuelle
+- Support multi-plateforme amélioré
+
+### 🐛 Corrections
+- Problème de détection de Pake sur Windows
+- Erreurs d'import et d'indentation
+- Gestion des chemins avec espaces
+- Encodage des caractères spéciaux
+- Interface responsive sur différentes résolutions
 
 ---
 
-**Astuce** : Utilisez le bouton "📋 Générer commande" pour voir la commande Pake qui sera exécutée avant de créer l'application !
+*Interface créée avec ❤️ pour simplifier l'utilisation de Pake*
