@@ -1,5 +1,9 @@
 # Dépendances pour Pake GUI
 # Note: tkinter est inclus par défaut avec Python
 
+# Requis pour le téléchargement automatique des favicons
+requests>=2.25.0
+Pillow>=9.0.0
+
 # Optionnel: pour une meilleure interface utilisateur
-# Pillow>=9.0.0  # Pour la gestion des images (décommentez si nécessaire)
+# ttkthemes>=3.2.0  # Thèmes modernes pour tkinter (décommentez si souhaité)

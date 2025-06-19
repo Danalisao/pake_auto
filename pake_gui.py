@@ -14,6 +14,20 @@ import json
 from pathlib import Path
 import re
 import shutil
+import datetime
+
+# Imports optionnels pour le téléchargement de favicon
+try:
+    import requests
+    from urllib.parse import urljoin, urlparse
+    from PIL import Image
+    import tempfile
+    FAVICON_SUPPORT = True
+except ImportError:
+    FAVICON_SUPPORT = False
+    print("⚠️ Modules manquants pour le téléchargement de favicon.")
+    print("💡 Installez avec: pip install requests pillow")
+    print("📝 Le téléchargement automatique des favicons sera désactivé.")
 
 class PakeGUI:
     def __init__(self, root):
@@ -30,6 +44,7 @@ class PakeGUI:
         self.fullscreen_var = tk.BooleanVar()
         self.hide_title_var = tk.BooleanVar()
         self.always_on_top_var = tk.BooleanVar()
+        self.auto_favicon_var = tk.BooleanVar(value=FAVICON_SUPPORT)  # Activer seulement si dépendances disponibles
         
         # Variables pour contrôle de processus
         self.current_process = None
@@ -121,6 +136,14 @@ class PakeGUI:
         icon_buttons.grid(row=0, column=2)
         ttk.Button(icon_buttons, text="📁 Parcourir", command=self.browse_icon).pack(side=tk.LEFT, padx=(0, 5))
         ttk.Button(icon_buttons, text="🗑️ Effacer", command=self.clear_icon).pack(side=tk.LEFT)
+          # Case à cocher pour le téléchargement automatique du favicon
+        favicon_checkbox = ttk.Checkbutton(icon_frame, text="🌐 Télécharger automatiquement le favicon si aucune icône", 
+                       variable=self.auto_favicon_var)
+        favicon_checkbox.grid(row=1, column=0, columnspan=3, sticky=tk.W, pady=(8, 0))
+        
+        # Désactiver si les dépendances ne sont pas disponibles
+        if not FAVICON_SUPPORT:
+            favicon_checkbox.config(state='disabled')
         
         # Section options
         options_frame = ttk.LabelFrame(main_frame, text="⚙️ Options avancées", padding="10")
@@ -413,10 +436,22 @@ class PakeGUI:
             cmd.extend(['--width', self.width_var.get()])
             
         if self.height_var.get() and self.height_var.get().isdigit():
-            cmd.extend(['--height', self.height_var.get()])
-            
-        if self.icon_path_var.get() and os.path.exists(self.icon_path_var.get()):
-            cmd.extend(['--icon', self.icon_path_var.get()])            
+            cmd.extend(['--height', self.height_var.get()])        # Gestion de l'icône avec téléchargement automatique du favicon
+        icon_path = self.icon_path_var.get()
+        if icon_path and os.path.exists(icon_path):
+            # Utiliser l'icône spécifiée par l'utilisateur
+            cmd.extend(['--icon', icon_path])
+        elif self.auto_favicon_var.get():
+            # Tenter de télécharger le favicon automatiquement si l'option est activée
+            self.log("🎨 Aucune icône spécifiée, tentative de téléchargement du favicon...")
+            favicon_path = self.download_favicon(url)
+            if favicon_path and os.path.exists(favicon_path):
+                cmd.extend(['--icon', favicon_path])
+                self.log(f"✅ Favicon utilisé comme icône: {os.path.basename(favicon_path)}")
+            else:
+                self.log("⚠️ Favicon non trouvé, icône par défaut de Pake utilisée")
+        else:
+            self.log("ℹ️ Téléchargement automatique du favicon désactivé, icône par défaut de Pake utilisée")
         if self.fullscreen_var.get():
             cmd.append('--fullscreen')
             
@@ -476,10 +511,10 @@ class PakeGUI:
             messagebox.showerror("Erreur", "Pake n'est pas installé ou non trouvé!\nVeuillez vérifier les prérequis.")
             return
             
-            # Activer l'état de construction
-            self.is_building = True
-            self.create_button.config(state='disabled')
-            self.stop_button.config(state='normal')
+        # Activer l'état de construction
+        self.is_building = True
+        self.create_button.config(state='disabled')
+        self.stop_button.config(state='normal')
             
         def run_pake():
             try:
@@ -586,7 +621,8 @@ class PakeGUI:
             'icon_path': self.icon_path_var.get(),
             'fullscreen': self.fullscreen_var.get(),
             'hide_title': self.hide_title_var.get(),
-            'always_on_top': self.always_on_top_var.get()
+            'always_on_top': self.always_on_top_var.get(),
+            'auto_favicon': self.auto_favicon_var.get()
         }
         try:
             with open(self.config_file, 'w', encoding='utf-8') as f:
@@ -600,8 +636,7 @@ class PakeGUI:
         if self.config_file.exists():
             try:
                 with open(self.config_file, 'r', encoding='utf-8') as f:
-                    config = json.load(f)
-                      # Charger les valeurs sauvegardées
+                    config = json.load(f)                # Charger les valeurs sauvegardées
                 self.url_var.set(config.get('url', ''))
                 self.name_var.set(config.get('name', ''))
                 self.width_var.set(config.get('width', '1200'))
@@ -610,11 +645,129 @@ class PakeGUI:
                 self.fullscreen_var.set(config.get('fullscreen', False))
                 self.hide_title_var.set(config.get('hide_title', False))
                 self.always_on_top_var.set(config.get('always_on_top', False))
+                self.auto_favicon_var.set(config.get('auto_favicon', True))
                 
                 print("✅ Configuration chargée depuis pake_gui_config.json")
                 
             except Exception as e:
                 print(f"⚠️ Erreur lors du chargement de la config: {e}")
+                
+    def download_favicon(self, url):
+        """Télécharge automatiquement le favicon d'un site web"""
+        if not FAVICON_SUPPORT:
+            self.log("❌ Téléchargement de favicon non disponible - modules manquants")
+            self.log("💡 Installez avec: pip install requests pillow")
+            return None
+            
+        try:
+            self.log(f"🔍 Recherche du favicon pour {url}")
+            
+            # Nettoyer et valider l'URL
+            if not url.startswith(('http://', 'https://')):
+                url = 'https://' + url
+            
+            parsed_url = urlparse(url)
+            base_url = f"{parsed_url.scheme}://{parsed_url.netloc}"
+            
+            # Liste des emplacements possibles du favicon
+            favicon_urls = [
+                urljoin(base_url, '/favicon.ico'),
+                urljoin(base_url, '/apple-touch-icon.png'),
+                urljoin(base_url, '/apple-touch-icon-precomposed.png'),
+                urljoin(base_url, '/favicon.png'),
+                urljoin(base_url, '/favicon.svg'),
+            ]
+            
+            # Essayer de récupérer le favicon depuis la page HTML
+            try:
+                response = requests.get(url, timeout=10, headers={
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+                })
+                if response.status_code == 200:
+                    html_content = response.text
+                    # Chercher les balises link rel="icon" ou rel="shortcut icon"
+                    import re
+                    icon_patterns = [
+                        r'<link[^>]*rel=["\'](?:shortcut )?icon["\'][^>]*href=["\']([^"\']+)["\'][^>]*>',
+                        r'<link[^>]*href=["\']([^"\']+)["\'][^>]*rel=["\'](?:shortcut )?icon["\'][^>]*>',
+                        r'<link[^>]*rel=["\']apple-touch-icon["\'][^>]*href=["\']([^"\']+)["\'][^>]*>',
+                    ]
+                    
+                    for pattern in icon_patterns:
+                        matches = re.findall(pattern, html_content, re.IGNORECASE)
+                        for match in matches:
+                            favicon_url = urljoin(base_url, match)
+                            if favicon_url not in favicon_urls:
+                                favicon_urls.insert(0, favicon_url)
+            except:
+                pass
+            
+            # Essayer de télécharger le favicon
+            for favicon_url in favicon_urls:
+                try:
+                    self.log(f"🔗 Tentative: {favicon_url}")
+                    response = requests.get(favicon_url, timeout=10, headers={
+                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+                    })
+                    
+                    if response.status_code == 200 and len(response.content) > 100:
+                        # Créer un dossier pour les favicons s'il n'existe pas
+                        favicon_dir = Path("favicons")
+                        favicon_dir.mkdir(exist_ok=True)
+                        
+                        # Déterminer l'extension du fichier
+                        content_type = response.headers.get('content-type', '').lower()
+                        if 'png' in content_type:
+                            ext = '.png'
+                        elif 'svg' in content_type:
+                            ext = '.svg'
+                        elif 'jpeg' in content_type or 'jpg' in content_type:
+                            ext = '.jpg'
+                        elif 'gif' in content_type:
+                            ext = '.gif'
+                        else:
+                            ext = '.ico'
+                        
+                        # Nom du fichier basé sur le domaine
+                        domain = parsed_url.netloc.replace('www.', '').replace(':', '_')
+                        favicon_path = favicon_dir / f"{domain}_favicon{ext}"
+                        
+                        # Sauvegarder le favicon
+                        with open(favicon_path, 'wb') as f:
+                            f.write(response.content)
+                        
+                        # Vérifier que c'est bien une image valide
+                        try:
+                            if ext != '.svg':  # SVG n'est pas supporté par PIL
+                                with Image.open(favicon_path) as img:
+                                    # Convertir en PNG si nécessaire
+                                    if ext != '.png':
+                                        png_path = favicon_path.with_suffix('.png')
+                                        img.save(png_path, 'PNG')
+                                        favicon_path.unlink()  # Supprimer l'original
+                                        favicon_path = png_path
+                        except Exception as img_error:
+                            self.log(f"⚠️ Erreur de validation image: {img_error}")
+                            if favicon_path.exists():
+                                favicon_path.unlink()
+                            continue
+                        
+                        self.log(f"✅ Favicon téléchargé: {favicon_path}")
+                        return str(favicon_path.absolute())
+                        
+                except requests.RequestException as e:
+                    self.log(f"⚠️ Échec {favicon_url}: {e}")
+                    continue
+                except Exception as e:
+                    self.log(f"⚠️ Erreur inattendue: {e}")
+                    continue
+            
+            self.log("❌ Aucun favicon trouvé")
+            return None
+            
+        except Exception as e:
+            self.log(f"❌ Erreur lors du téléchargement du favicon: {e}")
+            return None
 
 def main():
     """Point d'entrée principal de l'application"""
