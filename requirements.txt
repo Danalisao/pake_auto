@@ -1,0 +1,5 @@
+# Dépendances pour Pake GUI
+# Note: tkinter est inclus par défaut avec Python
+
+# Optionnel: pour une meilleure interface utilisateur
+# Pillow>=9.0.0  # Pour la gestion des images (décommentez si nécessaire)
